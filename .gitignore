@@ -1,11 +1,6 @@
 __pycache__
 
 
-/cached_face_neighbors/bird_decimated_neighbors.csv
-/cached_face_neighbors/fertilty_decimated_neighbors.csv
-/cached_face_neighbors/plier_decimated_neighbors.csv
-/cached_face_neighbors/teapot_decimated_neighbors.csv
-
 /cached_face_neighbors/blade_decimated_neighbors.csv
 /cached_face_neighbors/fish_decimated_neighbors.csv
 /cached_face_neighbors/propeller_decimated_neighbors.csv
