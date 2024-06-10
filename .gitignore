@@ -2,11 +2,6 @@ __pycache__
 
 
 
-/cached_face_neighbors/armadillo_decimated_neighbors.csv
-/cached_face_neighbors/dog_decimated_neighbors.csv
-/cached_face_neighbors/maxplanck_decimated_neighbors.csv
-/cached_face_neighbors/spider_decimated_neighbors.csv
-
 /cached_face_neighbors/bimba_decimated_neighbors.csv
 /cached_face_neighbors/fandisk_decimated_neighbors.csv
 /cached_face_neighbors/octopus_decimated_neighbors.csv
