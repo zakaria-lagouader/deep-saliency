@@ -1,11 +1,6 @@
 __pycache__
 
 
-/cached_face_neighbors/bunny_decimated_neighbors.csv
-/cached_face_neighbors/glass_decimated_neighbors.csv
-/cached_face_neighbors/santa_decimated_neighbors.csv
-/cached_face_neighbors/vase_decimated_neighbors.csv
-
 /cached_face_neighbors/bust_decimated_neighbors.csv
 /cached_face_neighbors/hand_decimated_neighbors.csv
 /cached_face_neighbors/sappho_decimated_neighbors.csv
