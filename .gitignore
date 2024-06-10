@@ -1,10 +1,6 @@
 __pycache__
 
 
-/cached_face_neighbors/ant_decimated_neighbors.csv
-/cached_face_neighbors/dinosaur_decimated_neighbors.csv
-/cached_face_neighbors/lucy_decimated_neighbors.csv
-/cached_face_neighbors/skull_decimated_neighbors.csv
 
 /cached_face_neighbors/armadillo_decimated_neighbors.csv
 /cached_face_neighbors/dog_decimated_neighbors.csv
