@@ -39,6 +39,10 @@ def process_model(modelName):
     #     patches = [neighboursByVertex(mModel, i, numOfElements)[0] for i in range(0, len(mModel.vertices))]
 
     patches = np.loadtxt("./cached_face_neighbors/" + modelName + "_neighbors.csv", delimiter=',').astype(int)
+
+    # sort patches by first column and then delete first column
+    patches = patches[patches[:, 0].argsort()][:, 1:]
+
     patchFacesNormals = np.loadtxt("./face_normals_and_area/" + modelName + "_face_normals.csv", delimiter=',')
     patchFacesArea = np.loadtxt("./face_normals_and_area/" + modelName + "_face_area.csv", delimiter=',')
 
@@ -55,7 +59,8 @@ def process_model(modelName):
         areasPatch = patchFacesArea[p]
 
 
-        vec = np.mean(np.array([n * a for (n, a) in zip(normalsPatch, areasPatch)]), axis=0)
+        # vec = np.mean(np.array([n * a for (n, a) in zip(normalsPatch, areasPatch)]), axis=0)
+        vec = normalsPatch
         vec = vec / np.linalg.norm(vec)
         axis, theta = computeRotation(vec, target)
         normalsPatch = rotatePatch(patchFacesNormals, axis, theta)
