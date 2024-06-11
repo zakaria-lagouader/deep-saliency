@@ -52,7 +52,7 @@ def process_model(modelName):
         patchFacesNormals = np.loadtxt("./face_normals_and_area/" + modelName + "_face_normals.csv", delimiter=',')
         patchFacesArea = np.loadtxt("./face_normals_and_area/" + modelName + "_face_area.csv", delimiter=',')
 
-        vec = np.mean(np.multiply(patchFacesNormals, patchFacesArea), axis=0)
+        vec = np.mean(np.array([n * a for (n, a) in zip(patchFacesNormals, patchFacesArea)]), axis=0)
         vec = vec / np.linalg.norm(vec)
         axis, theta = computeRotation(vec, target)
         normalsPatch = rotatePatch(patchFacesNormals, axis, theta)
