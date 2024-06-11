@@ -27,7 +27,7 @@ def process_model(modelName):
     #     V, inds = computePointCloudNormals(mModel, pointcloudnn)
     #     exportPLYPC(mModel, modelsDir + modelName + '_pcnorm_conf.ply')
 
-    gtdata = np.genfromtxt(rootdir + modelsDir + modelName + '.txt', delimiter=',')
+    gtdata = np.loadtxt(rootdir + modelsDir + modelName + '.txt', delimiter=',')
 
     # print('Saliency ground truth data')
     saliencyValues = gtdata.tolist() if type == 'continuous' else [int((num_classes - 1) * s) for s in gtdata.tolist()]
@@ -38,7 +38,7 @@ def process_model(modelName):
     # elif mode == "PC":
     #     patches = [neighboursByVertex(mModel, i, numOfElements)[0] for i in range(0, len(mModel.vertices))]
 
-    patches = np.genfromtxt("./cached_face_neighbors/" + modelName + "_neighbors.csv", delimiter=',').astype(int)
+    patches = np.loadtxt("./cached_face_neighbors/" + modelName + "_neighbors.csv", delimiter=',').astype(int)
 
     data = []
     for i, p in enumerate(patches):
@@ -49,10 +49,10 @@ def process_model(modelName):
         #     patchVerticesOriginal = [mModel.vertices[i] for i in p]
         #     normalsPatchVerticesOriginal = np.asarray([pF.normal for pF in patchVerticesOriginal])
 
-        patchFacesNormals = np.genfromtxt("./face_normals_and_area/" + modelName + "_face_normals.csv", delimiter=',')
-        patchFacesArea = np.genfromtxt("./face_normals_and_area/" + modelName + "_face_area.csv", delimiter=',')
+        patchFacesNormals = np.loadtxt("./face_normals_and_area/" + modelName + "_face_normals.csv", delimiter=',')
+        patchFacesArea = np.loadtxt("./face_normals_and_area/" + modelName + "_face_area.csv", delimiter=',')
 
-        vec = np.mean(np.multiply(patchFacesNormals, patchFacesArea[:, None]), axis=0)
+        vec = np.mean(np.multiply(patchFacesNormals, patchFacesArea), axis=0)
         vec = vec / np.linalg.norm(vec)
         axis, theta = computeRotation(vec, target)
         normalsPatch = rotatePatch(patchFacesNormals, axis, theta)
