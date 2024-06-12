@@ -27,10 +27,10 @@ def process_model(modelName):
     #     V, inds = computePointCloudNormals(mModel, pointcloudnn)
     #     exportPLYPC(mModel, modelsDir + modelName + '_pcnorm_conf.ply')
 
-    gtdata = np.loadtxt(rootdir + modelsDir + modelName + '.txt', delimiter=',')
+    # gtdata = np.loadtxt(rootdir + modelsDir + modelName + '.txt', delimiter=',')
 
     # print('Saliency ground truth data')
-    saliencyValues = gtdata.tolist() if type == 'continuous' else [int((num_classes - 1) * s) for s in gtdata.tolist()]
+    # saliencyValues = gtdata.tolist() if type == 'continuous' else [int((num_classes - 1) * s) for s in gtdata.tolist()]
 
     # patches = []
     # if mode == "MESH":
@@ -44,7 +44,7 @@ def process_model(modelName):
     patches = patches[patches[:, 0].argsort()][:, 1:]
 
     patchFacesNormals = np.loadtxt("./face_normals_and_area/" + modelName + "_face_normals.csv", delimiter=',')
-    patchFacesArea = np.loadtxt("./face_normals_and_area/" + modelName + "_face_area.csv", delimiter=',')
+    # patchFacesArea = np.loadtxt("./face_normals_and_area/" + modelName + "_face_area.csv", delimiter=',')
 
     data = []
     for i, p in enumerate(patches):
@@ -54,51 +54,50 @@ def process_model(modelName):
         # elif mode == "PC":
         #     patchVerticesOriginal = [mModel.vertices[i] for i in p]
         #     normalsPatchVerticesOriginal = np.asarray([pF.normal for pF in patchVerticesOriginal])
-
         normalsPatch = patchFacesNormals[p]
-        areasPatch = patchFacesArea[p]
+        # areasPatch = patchFacesArea[p]
 
 
-        # vec = np.mean(np.array([n * a for (n, a) in zip(normalsPatch, areasPatch)]), axis=0)
-        vec = normalsPatch
+        vec = np.mean(normalsPatch, axis=0)
         vec = vec / np.linalg.norm(vec)
         axis, theta = computeRotation(vec, target)
-        normalsPatch = rotatePatch(patchFacesNormals, axis, theta)
+        normalsPatch = rotatePatch(normalsPatch, axis, theta)
         normalsPatchR = normalsPatch.reshape((patchSide, patchSide, 3))
         if reshapeFunction == "hilbert":
             for hci in range(np.shape(I2HC)[0]):
                 normalsPatchR[I2HC[hci, 0], I2HC[hci, 1], :] = normalsPatch[:, HC2I[I2HC[hci, 0], I2HC[hci, 1]]]
         data.append((normalsPatchR + 1.0 * np.ones(np.shape(normalsPatchR))) / 2.0)
 
-    return data, saliencyValues
+    np.save(f"./train_data/{modelName}.npy", data)
+    # return data, saliencyValues
 
 # Process models in parallel
 with Pool() as pool:
     results = pool.map(process_model, trainSet)
 
 # Collect results
-for data, saliencyValues in results:
-    train_data.extend(data)
-    train_labels.extend(saliencyValues)
+# for data, saliencyValues in results:
+#     train_data.extend(data)
+#     train_labels.extend(saliencyValues)
 
 # Dataset and labels summarization ========================================================================
-train_data = np.asarray(train_data)
-if type == 'continuous':
-    train_labels = np.asarray([np.asarray(train_labels)]).transpose()
-    seppoint = int(0.9 * len(train_data))
-    X, X_test = train_data[:seppoint], train_data[seppoint:]
-    Y, Y_test = train_labels[:seppoint], train_labels[seppoint:]
-    data_train, data_test = X, X_test
-    label_train, label_test = Y, Y_test
-    saliency_model.compile(loss=tf.keras.losses.MeanSquaredError(), optimizer='adam', metrics=[tf.keras.metrics.RootMeanSquaredError()])
-elif type == 'discrete':
-    seppoint = int(0.9 * len(train_data))
-    X, X_test = train_data[:seppoint], train_data[seppoint:]
-    Y, Y_test = train_labels[:seppoint], train_labels[seppoint:]
-    data_train, data_test = X, X_test
-    label_train, label_test = to_categorical(Y, num_classes=num_classes), to_categorical(Y_test, num_classes=num_classes)
-    saliency_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+# train_data = np.asarray(train_data)
+# if type == 'continuous':
+#     train_labels = np.asarray([np.asarray(train_labels)]).transpose()
+#     seppoint = int(0.9 * len(train_data))
+#     X, X_test = train_data[:seppoint], train_data[seppoint:]
+#     Y, Y_test = train_labels[:seppoint], train_labels[seppoint:]
+#     data_train, data_test = X, X_test
+#     label_train, label_test = Y, Y_test
+#     saliency_model.compile(loss=tf.keras.losses.MeanSquaredError(), optimizer='adam', metrics=[tf.keras.metrics.RootMeanSquaredError()])
+# elif type == 'discrete':
+#     seppoint = int(0.9 * len(train_data))
+#     X, X_test = train_data[:seppoint], train_data[seppoint:]
+#     Y, Y_test = train_labels[:seppoint], train_labels[seppoint:]
+#     data_train, data_test = X, X_test
+#     label_train, label_test = to_categorical(Y, num_classes=num_classes), to_categorical(Y_test, num_classes=num_classes)
+#     saliency_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-saliency_model.summary()
-saliency_model_train = saliency_model.fit(x=data_train, y=label_train, batch_size=batch_size, epochs=numEpochs, verbose=1)
-saliency_model.save(rootdir + sessionsDir + keyTrain + '.h5')
+# saliency_model.summary()
+# saliency_model_train = saliency_model.fit(x=data_train, y=label_train, batch_size=batch_size, epochs=numEpochs, verbose=1)
+# saliency_model.save(rootdir + sessionsDir + keyTrain + '.h5')
